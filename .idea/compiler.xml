@@ -11,6 +11,12 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cloud-prj-tst" target="8" />
+      <module name="wrapper" target="1.5" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="cloud-prj-tst" options="-parameters" />
+    </option>
   </component>
 </project>
