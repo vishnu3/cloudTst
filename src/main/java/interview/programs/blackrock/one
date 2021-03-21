@@ -1,0 +1,113 @@
+package interview.programs.blackrock;
+
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+blackrock
+
+class Result {
+
+    /*
+     * Complete the 'maxMin' function below.
+     *
+     * The function is expected to return a LONG_INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. STRING_ARRAY operations
+     *  2. INTEGER_ARRAY x
+     */
+
+    public static List<Integer> cardinalitySort(List<Integer> nums) {
+        // Write your code here
+        HashMap<Integer,Integer> inxCount = new HashMap<>();
+        List<Integer> countList = new ArrayList<>();
+        List<Integer> outPut =  new ArrayList<>();
+        for( int i =0;i<nums.size();i++){
+
+           // String binNum = Integer.toBinaryString(nums.get(i));
+
+            int bitCount =  Integer.bitCount(nums.get(i));
+            inxCount.put(i,bitCount);
+            countList.add(bitCount);
+        }
+
+
+        List<Integer> sortedList = countList.stream().sorted().collect(toList());
+
+        List<Integer> addedIndex = new ArrayList<>();
+        for(Integer i : sortedList){
+        //List<Integer> addedIndex = new ArrayList<>();
+
+            Integer finalI = i;
+            List<Integer> local = inxCount.entrySet().stream().
+                                    filter(e ->e.getValue().equals(finalI))
+                                  .map(Map.Entry::getKey)
+                                  .collect(toList());
+
+            if(local.size()>1){
+               for(int k =0 ;k< local.size();k++){
+                   if(!addedIndex.contains(local.get(k))) {
+                       outPut.add(nums.get(local.get(k)));
+                       addedIndex.add(local.get(k));
+                   }
+               }
+
+            }else{
+                if(!addedIndex.contains(local.get(0))) {
+                    outPut.add(nums.get(local.get(0)));
+                    addedIndex.add(local.get(0));
+                }
+            }
+
+        }
+
+        return outPut;
+
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+        File file = new File("C:/VishnuJ/test-projects/testout.txt");
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+
+        int numsCount = Integer.parseInt(bufferedReader.readLine().trim());
+
+        List<Integer> nums = IntStream.range(0, numsCount).mapToObj(i -> {
+            try {
+                return bufferedReader.readLine().replaceAll("\\s+$", "");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        })
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .collect(toList());
+
+        List<Integer> result = Result.cardinalitySort(nums);
+
+        System.out.println("result "+result);
+
+        bufferedWriter.write(
+                result.stream()
+                        .map(Object::toString)
+                        .collect(joining("\n"))
+                        + "\n"
+        );
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
+
